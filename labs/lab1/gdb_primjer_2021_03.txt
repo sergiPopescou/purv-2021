@@ -1,0 +1,215 @@
+Breakpoint 1 at 0x1175: file primjer_2021_03.c, line 5.
+Starting program: /home/saki99/Documents/C/RealTime Programming/Lab 1/primjer 
+
+Breakpoint 1, main () at primjer_2021_03.c:5
+5	    int* p = malloc(8); 
+Dump of assembler code for function main:
+primjer_2021_03.c:
+4	int main(void) { 
+   0x0000555555555169 <+0>:	endbr64 
+   0x000055555555516d <+4>:	push   %rbp
+   0x000055555555516e <+5>:	mov    %rsp,%rbp
+   0x0000555555555171 <+8>:	sub    $0x10,%rsp
+
+5	    int* p = malloc(8); 
+=> 0x0000555555555175 <+12>:	mov    $0x8,%edi
+   0x000055555555517a <+17>:	callq  0x555555555070 <malloc@plt>
+   0x000055555555517f <+22>:	mov    %rax,-0x8(%rbp)
+
+6	    *p = 100; 
+   0x0000555555555183 <+26>:	mov    -0x8(%rbp),%rax
+   0x0000555555555187 <+30>:	movl   $0x64,(%rax)
+
+7	    free(p); 
+   0x000055555555518d <+36>:	mov    -0x8(%rbp),%rax
+   0x0000555555555191 <+40>:	mov    %rax,%rdi
+   0x0000555555555194 <+43>:	callq  0x555555555060 <free@plt>
+
+8	    *p = 110; 
+   0x0000555555555199 <+48>:	mov    -0x8(%rbp),%rax
+   0x000055555555519d <+52>:	movl   $0x6e,(%rax)
+
+9	    return 0; 
+   0x00005555555551a3 <+58>:	mov    $0x0,%eax
+
+10	} 
+   0x00005555555551a8 <+63>:	leaveq 
+   0x00005555555551a9 <+64>:	retq   
+End of assembler dump.
+1: $esi = -8744
+2: $edi = 1
+3: /a $rax = 0x555555555169 <main>
+4: p = (int *) 0x0
+5: (p + 1) = (int *) 0x4
+6: *p = <error: Cannot access memory at address 0x0>
+7: *(p + 1) = <error: Cannot access memory at address 0x4>
+0x000055555555517a	5	    int* p = malloc(8); 
+1: $esi = -8744
+2: $edi = 8
+3: /a $rax = 0x555555555169 <main>
+4: p = (int *) 0x0
+5: (p + 1) = (int *) 0x4
+6: *p = <error: Cannot access memory at address 0x0>
+7: *(p + 1) = <error: Cannot access memory at address 0x4>
+6	    *p = 100; 
+1: $esi = 0
+2: $edi = 0
+3: /a $rax = 0x5555555592a0
+4: p = (int *) 0x5555555592a0
+5: (p + 1) = (int *) 0x5555555592a4
+6: *p = 0
+7: *(p + 1) = 0
+Dump of assembler code for function main:
+primjer_2021_03.c:
+4	int main(void) { 
+   0x0000555555555169 <+0>:	endbr64 
+   0x000055555555516d <+4>:	push   %rbp
+   0x000055555555516e <+5>:	mov    %rsp,%rbp
+   0x0000555555555171 <+8>:	sub    $0x10,%rsp
+
+5	    int* p = malloc(8); 
+   0x0000555555555175 <+12>:	mov    $0x8,%edi
+   0x000055555555517a <+17>:	callq  0x555555555070 <malloc@plt>
+   0x000055555555517f <+22>:	mov    %rax,-0x8(%rbp)
+
+6	    *p = 100; 
+=> 0x0000555555555183 <+26>:	mov    -0x8(%rbp),%rax
+   0x0000555555555187 <+30>:	movl   $0x64,(%rax)
+
+7	    free(p); 
+   0x000055555555518d <+36>:	mov    -0x8(%rbp),%rax
+   0x0000555555555191 <+40>:	mov    %rax,%rdi
+   0x0000555555555194 <+43>:	callq  0x555555555060 <free@plt>
+
+8	    *p = 110; 
+   0x0000555555555199 <+48>:	mov    -0x8(%rbp),%rax
+   0x000055555555519d <+52>:	movl   $0x6e,(%rax)
+
+9	    return 0; 
+   0x00005555555551a3 <+58>:	mov    $0x0,%eax
+
+10	} 
+   0x00005555555551a8 <+63>:	leaveq 
+   0x00005555555551a9 <+64>:	retq   
+End of assembler dump.
+0x0000555555555187	6	    *p = 100; 
+1: $esi = 0
+2: $edi = 0
+3: /a $rax = 0x5555555592a0
+4: p = (int *) 0x5555555592a0
+5: (p + 1) = (int *) 0x5555555592a4
+6: *p = 0
+7: *(p + 1) = 0
+7	    free(p); 
+1: $esi = 0
+2: $edi = 0
+3: /a $rax = 0x5555555592a0
+4: p = (int *) 0x5555555592a0
+5: (p + 1) = (int *) 0x5555555592a4
+6: *p = 100
+7: *(p + 1) = 0
+Dump of assembler code for function main:
+primjer_2021_03.c:
+4	int main(void) { 
+   0x0000555555555169 <+0>:	endbr64 
+   0x000055555555516d <+4>:	push   %rbp
+   0x000055555555516e <+5>:	mov    %rsp,%rbp
+   0x0000555555555171 <+8>:	sub    $0x10,%rsp
+
+5	    int* p = malloc(8); 
+   0x0000555555555175 <+12>:	mov    $0x8,%edi
+   0x000055555555517a <+17>:	callq  0x555555555070 <malloc@plt>
+   0x000055555555517f <+22>:	mov    %rax,-0x8(%rbp)
+
+6	    *p = 100; 
+   0x0000555555555183 <+26>:	mov    -0x8(%rbp),%rax
+   0x0000555555555187 <+30>:	movl   $0x64,(%rax)
+
+7	    free(p); 
+=> 0x000055555555518d <+36>:	mov    -0x8(%rbp),%rax
+   0x0000555555555191 <+40>:	mov    %rax,%rdi
+   0x0000555555555194 <+43>:	callq  0x555555555060 <free@plt>
+
+8	    *p = 110; 
+   0x0000555555555199 <+48>:	mov    -0x8(%rbp),%rax
+   0x000055555555519d <+52>:	movl   $0x6e,(%rax)
+
+9	    return 0; 
+   0x00005555555551a3 <+58>:	mov    $0x0,%eax
+
+10	} 
+   0x00005555555551a8 <+63>:	leaveq 
+   0x00005555555551a9 <+64>:	retq   
+End of assembler dump.
+8	    *p = 110; 
+1: $esi = 1431671456
+2: $edi = 1431670800
+3: /a $rax = 0x0
+4: p = (int *) 0x5555555592a0
+5: (p + 1) = (int *) 0x5555555592a4
+6: *p = 0
+7: *(p + 1) = 0
+Dump of assembler code for function main:
+primjer_2021_03.c:
+4	int main(void) { 
+   0x0000555555555169 <+0>:	endbr64 
+   0x000055555555516d <+4>:	push   %rbp
+   0x000055555555516e <+5>:	mov    %rsp,%rbp
+   0x0000555555555171 <+8>:	sub    $0x10,%rsp
+
+5	    int* p = malloc(8); 
+   0x0000555555555175 <+12>:	mov    $0x8,%edi
+   0x000055555555517a <+17>:	callq  0x555555555070 <malloc@plt>
+   0x000055555555517f <+22>:	mov    %rax,-0x8(%rbp)
+
+6	    *p = 100; 
+   0x0000555555555183 <+26>:	mov    -0x8(%rbp),%rax
+   0x0000555555555187 <+30>:	movl   $0x64,(%rax)
+
+7	    free(p); 
+   0x000055555555518d <+36>:	mov    -0x8(%rbp),%rax
+   0x0000555555555191 <+40>:	mov    %rax,%rdi
+   0x0000555555555194 <+43>:	callq  0x555555555060 <free@plt>
+
+8	    *p = 110; 
+=> 0x0000555555555199 <+48>:	mov    -0x8(%rbp),%rax
+   0x000055555555519d <+52>:	movl   $0x6e,(%rax)
+
+9	    return 0; 
+   0x00005555555551a3 <+58>:	mov    $0x0,%eax
+
+10	} 
+   0x00005555555551a8 <+63>:	leaveq 
+   0x00005555555551a9 <+64>:	retq   
+End of assembler dump.
+0x000055555555519d	8	    *p = 110; 
+1: $esi = 1431671456
+2: $edi = 1431670800
+3: /a $rax = 0x5555555592a0
+4: p = (int *) 0x5555555592a0
+5: (p + 1) = (int *) 0x5555555592a4
+6: *p = 0
+7: *(p + 1) = 0
+9	    return 0; 
+1: $esi = 1431671456
+2: $edi = 1431670800
+3: /a $rax = 0x5555555592a0
+4: p = (int *) 0x5555555592a0
+5: (p + 1) = (int *) 0x5555555592a4
+6: *p = 110
+7: *(p + 1) = 0
+10	} 
+1: $esi = 1431671456
+2: $edi = 1431670800
+3: /a $rax = 0x0
+4: p = (int *) 0x5555555592a0
+5: (p + 1) = (int *) 0x5555555592a4
+6: *p = 110
+7: *(p + 1) = 0
+__libc_start_main (main=0x555555555169 <main>, argc=1, argv=0x7fffffffddd8, init=<optimized out>, fini=<optimized out>, 
+    rtld_fini=<optimized out>, stack_end=0x7fffffffddc8) at ../csu/libc-start.c:342
+342	../csu/libc-start.c: No such file or directory.
+1: $esi = 1431671456
+2: $edi = 1431670800
+3: /a $rax = 0x0
+[Inferior 1 (process 4016) exited normally]
