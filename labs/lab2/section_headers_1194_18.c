@@ -131,11 +131,11 @@ char* getTypeStringFromNumber(Elf64Word type) {
 */
 void printHeaderFormat() {
     printf("%6s", "[Nr]");
-    printf("%33s", "Name");
+    printf("%17s", "Name");
     printf("%18s", "Type");
     printf("%23s", "Address");
     printf("%9s\n", "Offset");
-    printf("%39s", "Size");
+    printf("%23s", "Size");
     printf("%18s", "EntSize");
     printf("%11s%6s%6s", "Flags", "Link", "Info");
     printf("%9s\n", "Align");
@@ -148,11 +148,11 @@ void printHeaderFormat() {
 */
 void printSectionData(int number, SectionHeader* data) {
     printf("  [%2d]", number);
-    printf("%33d", data->name);
+    printf("%17d", data->name);
     printf("%18s", getTypeStringFromNumber(data->type));
     printf("       %016lx", data->addr);
     printf(" %08lx\n", data->offset);
-    printf("%23s%016lx", "", data->size);
+    printf("%7s%016lx", "", data->size);
     printf("  %016lx", data->entSize);
     printf("%11s%6d%6d", getFlagsStringFromNumber(data->flags), data->link, data->info);
     printf("%9ld\n", data->addrAlign);
@@ -175,7 +175,7 @@ int main(int argc, char** argv) {
         if (fp) {
 
             Elf64Off sectionOffset;
-            Elf64Half sectionHeaderSize, sectionHeaderCount;
+            Elf64Half sectionHeaderSize, sectionHeaderCount, stringTableOffset;
             
             fseek(fp, SECTION_HEADER_TABLE_OFFSET, SEEK_SET);
             fread(&sectionOffset, sizeof(Elf64Off), 1, fp);
@@ -183,6 +183,7 @@ int main(int argc, char** argv) {
             fseek(fp, SECTION_HEADER_SIZE, SEEK_SET);
             fread(&sectionHeaderSize, sizeof(Elf64Half), 1, fp);
             fread(&sectionHeaderCount, sizeof(Elf64Half), 1, fp);
+            fread(&stringTableOffset, sizeof(Elf64Half), 1, fp);
 
             SectionHeader* sections = (SectionHeader *) calloc(sectionHeaderCount, sectionHeaderSize);
             if (sections) {
