@@ -1,0 +1,49 @@
+Starting program: /home/dimitrije/Desktop/lab1/primjer 
+
+Breakpoint 1, main () at primjer_2021_01.c:16
+16	     scanf("%d", n1);
+1: suma = 0
+2: n1 = 0
+3: n2 = 0
+11	int main()
+12	{
+13		 static char *poruka = "Suma brojeva 1 i 2 je";
+14	     int n1;
+15	     int n2;
+16	     scanf("%d", n1);
+17	     scanf("%d", n2);
+18	     suma=add_numbers(n1,n2);
+19	     printf("%s %d\n", poruka, suma);
+20	
+Dump of assembler code for function main:
+   0x00005555555546e4 <+0>:	push   %rbp
+   0x00005555555546e5 <+1>:	mov    %rsp,%rbp
+   0x00005555555546e8 <+4>:	sub    $0x10,%rsp
+=> 0x00005555555546ec <+8>:	mov    -0x8(%rbp),%eax
+   0x00005555555546ef <+11>:	mov    %eax,%esi
+   0x00005555555546f1 <+13>:	lea    0xec(%rip),%rdi        # 0x5555555547e4
+   0x00005555555546f8 <+20>:	mov    $0x0,%eax
+   0x00005555555546fd <+25>:	callq  0x5555555545a0 <__isoc99_scanf@plt>
+   0x0000555555554702 <+30>:	mov    -0x4(%rbp),%eax
+   0x0000555555554705 <+33>:	mov    %eax,%esi
+   0x0000555555554707 <+35>:	lea    0xd6(%rip),%rdi        # 0x5555555547e4
+   0x000055555555470e <+42>:	mov    $0x0,%eax
+   0x0000555555554713 <+47>:	callq  0x5555555545a0 <__isoc99_scanf@plt>
+   0x0000555555554718 <+52>:	mov    -0x4(%rbp),%edx
+   0x000055555555471b <+55>:	mov    -0x8(%rbp),%eax
+   0x000055555555471e <+58>:	mov    %edx,%esi
+   0x0000555555554720 <+60>:	mov    %eax,%edi
+   0x0000555555554722 <+62>:	callq  0x5555555546ca <add_numbers>
+   0x0000555555554727 <+67>:	mov    %eax,0x2008ef(%rip)        # 0x55555575501c <suma>
+   0x000055555555472d <+73>:	mov    0x2008e9(%rip),%edx        # 0x55555575501c <suma>
+Quit
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00007ffff7a519a2 in _IO_vfscanf_internal (s=<optimized out>, 
+    format=<optimized out>, argptr=argptr@entry=0x7fffffffdbc0, 
+    errp=errp@entry=0x0) at vfscanf.c:1898
+1898	vfscanf.c: No such file or directory.
+1: suma = 0
+
+Program terminated with signal SIGSEGV, Segmentation fault.
+The program no longer exists.
