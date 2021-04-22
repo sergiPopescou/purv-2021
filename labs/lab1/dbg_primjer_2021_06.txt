@@ -1,0 +1,93 @@
+# PRVI DOMACI ZADATAK 
+
+# Student: Aleksandar Simonovic 1154/16
+
+# Prikaz izvornog koda
+1	 #include<stdio.h> 
+2	 #include<stdlib.h> 
+3	 #include<string.h> 
+4	  
+5	 int main(void) 
+6	 { 
+7	     char *strng ; 
+8	     strcat(strng, " dodatni strng"); 
+9	     printf("\n %s \n", strng); 
+10	     return 0; 
+11	 }
+# Postavljanje breakpoint-a na funkciju main i liniju sa pozivom printf
+Breakpoint 1 at 0x1141: file zadaca.c, line 8.
+Breakpoint 2 at 0x1188: file zadaca.c, line 9.
+
+# Prikaz trenutno postavljenih breakpoint-ova
+Num     Type           Disp Enb Address            What
+1       breakpoint     keep y   0x0000000000001141 in main at zadaca.c:8
+2       breakpoint     keep y   0x0000000000001188 in main at zadaca.c:9
+
+# Pokretanje
+Starting program: /home/aleksandar/Desktop/zadaca 
+
+Breakpoint 1, main () at zadaca.c:8
+8	     strcat(strng, " dodatni strng"); 
+
+# Prikaz disasemblera
+Dump of assembler code for function main:
+zadaca.c:
+6	 { 
+   0x0000555555555139 <+0>:	push   %rbp
+   0x000055555555513a <+1>:	mov    %rsp,%rbp
+   0x000055555555513d <+4>:	sub    $0x10,%rsp
+
+7	     char *strng ; 
+8	     strcat(strng, " dodatni strng"); 
+=> 0x0000555555555141 <+8>:	mov    -0x8(%rbp),%rax
+   0x0000555555555145 <+12>:	mov    $0xffffffffffffffff,%rcx
+   0x000055555555514c <+19>:	mov    %rax,%rdx
+   0x000055555555514f <+22>:	mov    $0x0,%eax
+   0x0000555555555154 <+27>:	mov    %rdx,%rdi
+   0x0000555555555157 <+30>:	repnz scas %es:(%rdi),%al
+   0x0000555555555159 <+32>:	mov    %rcx,%rax
+   0x000055555555515c <+35>:	not    %rax
+   0x000055555555515f <+38>:	lea    -0x1(%rax),%rdx
+   0x0000555555555163 <+42>:	mov    -0x8(%rbp),%rax
+   0x0000555555555167 <+46>:	add    %rdx,%rax
+   0x000055555555516a <+49>:	movabs $0x696e7461646f6420,%rsi
+   0x0000555555555174 <+59>:	mov    %rsi,(%rax)
+   0x0000555555555177 <+62>:	movl   $0x72747320,0x8(%rax)
+   0x000055555555517e <+69>:	movw   $0x676e,0xc(%rax)
+   0x0000555555555184 <+75>:	movb   $0x0,0xe(%rax)
+
+9	     printf("\n %s \n", strng); 
+   0x0000555555555188 <+79>:	mov    -0x8(%rbp),%rax
+   0x000055555555518c <+83>:	mov    %rax,%rsi
+   0x000055555555518f <+86>:	lea    0xe6e(%rip),%rdi        # 0x555555556004
+   0x0000555555555196 <+93>:	mov    $0x0,%eax
+   0x000055555555519b <+98>:	callq  0x555555555030 <printf@plt>
+
+10	     return 0; 
+   0x00005555555551a0 <+103>:	mov    $0x0,%eax
+
+11	 }
+   0x00005555555551a5 <+108>:	leaveq 
+   0x00005555555551a6 <+109>:	retq   
+End of assembler dump.
+
+# Vidimo da je sljedeca linija koda koja treba da se izvrsi poziv strcat funkcije
+
+# Adresa na koju pokazuje pokazivac strng je
+1: /a strng = 0x0
+
+# Vidimo da je strng null pointer, ali pokusajmo iscitati pomocu x naredbe
+0x0:	Cannot access memory at address 0x0
+
+# Dakle, bilo kakav pokusaj koristenja ovog pokazivaca dovesce do greske
+
+# Ulazimo u strcat
+
+Program received signal SIGSEGV, Segmentation fault.
+0x0000555555555157 in main () at zadaca.c:8
+8	     strcat(strng, " dodatni strng"); 
+1: /a strng = 0x0
+
+# Dobijamo Segmentation fault jer uopste nije rezervisan prostor u koji bi se mogao smjestiti neki string
+
+# U nastavku prilazem jednostavnu modifikaciju programa
