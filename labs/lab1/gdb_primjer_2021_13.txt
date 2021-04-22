@@ -1,0 +1,19 @@
+No symbol table is loaded.  Use the "file" command.
+Reading symbols from program...
+Breakpoint 1 at 0x1192: file primjer_2021_13.c, line 4.
+Breakpoint 2 at 0x119a: file primjer_2021_13.c, line 5.
+Starting program: /home/milan/Desktop/purv/LAB1/program 
+
+Breakpoint 1, main (argc=1, argv=0x7fffffffdf48) at primjer_2021_13.c:4
+4		int* ptr = &x;
+$1 = (int *) 0x7fffffffdf40
+
+Breakpoint 2, main (argc=1, argv=0x7fffffffdf48) at primjer_2021_13.c:5
+5		ptr++;
+$2 = (int *) 0x7fffffffde3c
+6		printf("%x   %d \n",  ptr,  *ptr);  
+7	} 
+0x00007ffff7ddf0b3 in __libc_start_main () from /lib/x86_64-linux-gnu/libc.so.6
+Single stepping until exit from function __libc_start_main,
+which has no line number information.
+[Inferior 1 (process 6788) exited normally]
