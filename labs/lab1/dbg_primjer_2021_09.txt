@@ -1,0 +1,206 @@
+#pokretanje programa koji dibagujemo komandom run
+Starting program: /home/tamara/Desktop/lab1/addnum 
+
+Program received signal SIGSEGV, Segmentation fault.
+main () at primjer_2021_09.c:19
+19	     *(poruka+2) = 'x';
+#breakpoint na add_numbers f-ju
+Breakpoint 1 at 0x555555555143: file primjer_2021_09.c, line 6.
+# prikazivanje stanja registara rsp i rbp pri svakom pokretanju programa
+1: /a $rsp = 0x7fffffffdec0
+2: /a $rbp = 0x7fffffffded0
+#/a->dobijamo u formatu adrese adresu stek pointera(rsp) i adresu bivse vrijednosti stek pointera (rbp)
+#breakpoint na f-ju main
+Breakpoint 2 at 0x55555555515b: file primjer_2021_09.c, line 14.
+#breakpoint na liniju 19
+Breakpoint 3 at 0x555555555189: file primjer_2021_09.c, line 19.
+Starting program: /home/tamara/Desktop/lab1/addnum 
+
+Breakpoint 2, main () at primjer_2021_09.c:14
+14		 char *poruka = "Suma brojeva 1 i 2 je";
+1: /a $rsp = 0x7fffffffdec0
+2: /a $rbp = 0x7fffffffded0
+#asembler kod
+Dump of assembler code for function main:
+primjer_2021_09.c:
+13	{
+   0x0000555555555153 <+0>:	push   %rbp
+   0x0000555555555154 <+1>:	mov    %rsp,%rbp
+   0x0000555555555157 <+4>:	sub    $0x10,%rsp
+
+14		 char *poruka = "Suma brojeva 1 i 2 je";
+=> 0x000055555555515b <+8>:	lea    0xea2(%rip),%rax        # 0x555555556004
+   0x0000555555555162 <+15>:	mov    %rax,-0x8(%rbp)
+
+15	     int n1=1;
+   0x0000555555555166 <+19>:	movl   $0x1,-0x10(%rbp)
+
+16	     int n2=2;
+   0x000055555555516d <+26>:	movl   $0x2,-0xc(%rbp)
+
+17	     
+18	     suma=add_numbers(n1,n2);
+   0x0000555555555174 <+33>:	mov    -0xc(%rbp),%edx
+   0x0000555555555177 <+36>:	mov    -0x10(%rbp),%eax
+   0x000055555555517a <+39>:	mov    %edx,%esi
+   0x000055555555517c <+41>:	mov    %eax,%edi
+   0x000055555555517e <+43>:	callq  0x555555555139 <add_numbers>
+   0x0000555555555183 <+48>:	mov    %eax,0x2e8b(%rip)        # 0x555555558014 <suma>
+
+19	     *(poruka+2) = 'x';
+   0x0000555555555189 <+54>:	mov    -0x8(%rbp),%rax
+   0x000055555555518d <+58>:	add    $0x2,%rax
+   0x0000555555555191 <+62>:	movb   $0x78,(%rax)
+
+20	     printf("%s %d\n", poruka, suma);
+   0x0000555555555194 <+65>:	mov    0x2e7a(%rip),%edx        # 0x555555558014 <suma>
+   0x000055555555519a <+71>:	mov    -0x8(%rbp),%rax
+   0x000055555555519e <+75>:	mov    %rax,%rsi
+   0x00005555555551a1 <+78>:	lea    0xe72(%rip),%rdi        # 0x55555555601a
+   0x00005555555551a8 <+85>:	mov    $0x0,%eax
+   0x00005555555551ad <+90>:	callq  0x555555555030 <printf@plt>
+
+21	
+22	     return 0;
+   0x00005555555551b2 <+95>:	mov    $0x0,%eax
+
+23	}
+Quit
+#stack
+0x7fffffffdec0:	-8256	32767	0	0
+0x7fffffffded0:	0	0	-136404813	32767
+0x7fffffffdee0:	24	1	-8248	32767
+0x7fffffffdef0:	-134564328	1	1431654739	21845
+# naredba step izvrsava sledecu liniju programskog koda
+15	     int n1=1;
+1: /a $rsp = 0x7fffffffdec0
+2: /a $rbp = 0x7fffffffded0
+Dump of assembler code for function main:
+primjer_2021_09.c:
+13	{
+   0x0000555555555153 <+0>:	push   %rbp
+   0x0000555555555154 <+1>:	mov    %rsp,%rbp
+   0x0000555555555157 <+4>:	sub    $0x10,%rsp
+
+14		 char *poruka = "Suma brojeva 1 i 2 je";
+   0x000055555555515b <+8>:	lea    0xea2(%rip),%rax        # 0x555555556004
+   0x0000555555555162 <+15>:	mov    %rax,-0x8(%rbp)
+
+15	     int n1=1;
+=> 0x0000555555555166 <+19>:	movl   $0x1,-0x10(%rbp)
+
+16	     int n2=2;
+   0x000055555555516d <+26>:	movl   $0x2,-0xc(%rbp)
+
+17	     
+18	     suma=add_numbers(n1,n2);
+   0x0000555555555174 <+33>:	mov    -0xc(%rbp),%edx
+   0x0000555555555177 <+36>:	mov    -0x10(%rbp),%eax
+   0x000055555555517a <+39>:	mov    %edx,%esi
+   0x000055555555517c <+41>:	mov    %eax,%edi
+Quit
+#naredbom stepi izvrsavamo jednu instrukciju
+16	     int n2=2;
+1: /a $rsp = 0x7fffffffdec0
+2: /a $rbp = 0x7fffffffded0
+# continue na sledeci breakpoint
+Continuing.
+
+Breakpoint 1, add_numbers (n1=1, n2=2) at primjer_2021_09.c:6
+6	     int sum=n1+n2;
+1: /a $rsp = 0x7fffffffdeb0
+2: /a $rbp = 0x7fffffffdeb0
+Continuing.
+
+Breakpoint 3, main () at primjer_2021_09.c:19
+19	     *(poruka+2) = 'x';
+1: /a $rsp = 0x7fffffffdec0
+2: /a $rbp = 0x7fffffffded0
+Continuing.
+
+Program received signal SIGSEGV, Segmentation fault.
+main () at primjer_2021_09.c:19
+19	     *(poruka+2) = 'x';
+1: /a $rsp = 0x7fffffffdec0
+2: /a $rbp = 0x7fffffffded0
+Dump of assembler code for function main:
+primjer_2021_09.c:
+13	{
+   0x0000555555555153 <+0>:	push   %rbp
+   0x0000555555555154 <+1>:	mov    %rsp,%rbp
+   0x0000555555555157 <+4>:	sub    $0x10,%rsp
+
+14		 char *poruka = "Suma brojeva 1 i 2 je";
+   0x000055555555515b <+8>:	lea    0xea2(%rip),%rax        # 0x555555556004
+   0x0000555555555162 <+15>:	mov    %rax,-0x8(%rbp)
+
+15	     int n1=1;
+   0x0000555555555166 <+19>:	movl   $0x1,-0x10(%rbp)
+
+16	     int n2=2;
+   0x000055555555516d <+26>:	movl   $0x2,-0xc(%rbp)
+
+17	     
+18	     suma=add_numbers(n1,n2);
+   0x0000555555555174 <+33>:	mov    -0xc(%rbp),%edx
+   0x0000555555555177 <+36>:	mov    -0x10(%rbp),%eax
+   0x000055555555517a <+39>:	mov    %edx,%esi
+   0x000055555555517c <+41>:	mov    %eax,%edi
+   0x000055555555517e <+43>:	callq  0x555555555139 <add_numbers>
+   0x0000555555555183 <+48>:	mov    %eax,0x2e8b(%rip)        # 0x555555558014 <suma>
+
+19	     *(poruka+2) = 'x';
+   0x0000555555555189 <+54>:	mov    -0x8(%rbp),%rax
+   0x000055555555518d <+58>:	add    $0x2,%rax
+=> 0x0000555555555191 <+62>:	movb   $0x78,(%rax)
+
+20	     printf("%s %d\n", poruka, suma);
+   0x0000555555555194 <+65>:	mov    0x2e7a(%rip),%edx        # 0x555555558014 <suma>
+   0x000055555555519a <+71>:	mov    -0x8(%rbp),%rax
+   0x000055555555519e <+75>:	mov    %rax,%rsi
+   0x00005555555551a1 <+78>:	lea    0xe72(%rip),%rdi        # 0x55555555601a
+   0x00005555555551a8 <+85>:	mov    $0x0,%eax
+   0x00005555555551ad <+90>:	callq  0x555555555030 <printf@plt>
+
+21	
+22	     return 0;
+   0x00005555555551b2 <+95>:	mov    $0x0,%eax
+
+23	}
+Quit
+rax            0x555555556006      93824992239622
+rbx            0x5555555551c0      93824992235968
+rcx            0x5555555551c0      93824992235968
+rdx            0x1                 1
+rsi            0x2                 2
+rdi            0x1                 1
+rbp            0x7fffffffded0      0x7fffffffded0
+rsp            0x7fffffffdec0      0x7fffffffdec0
+r8             0x0                 0
+r9             0x7ffff7fe0d50      140737354009936
+r10            0x7ffff7ffcf68      140737354125160
+r11            0x206               518
+r12            0x555555555050      93824992235600
+r13            0x7fffffffdfc0      140737488347072
+r14            0x0                 0
+r15            0x0                 0
+rip            0x555555555191      0x555555555191 <main+62>
+eflags         0x10206             [ PF IF RF ]
+cs             0x33                51
+ss             0x2b                43
+ds             0x0                 0
+es             0x0                 0
+fs             0x0                 0
+Quit
+Symbol "suma" is static storage at address 0x555555558014.
+Symbol "poruka" is a complex DWARF expression:
+     0: DW_OP_fbreg -24
+.
+#imamo segmentation fault na liniji 19 jer je poruka string literal i u tom slucaju ne moze biti modifikovan podatak,dok pokazivac na poruku moze
+#ako je poruka tipa niz karaktera( char poruka[]) tada ce se podaci modifikovati, dok nije moguce mijenjati pokazivac na poruku
+Undefined command: "echp".  Try "help".
+
+#nakon gore navedene izmjene u kodu, ponovnog kompajliranja i pokretanja 
+Starting program: /home/tamara/Desktop/lab1/add_num 
+[Inferior 1 (process 3717) exited normally]
+#vidimo izmjenu u trecem karakteru poruke, prog sada nema segmentation fault
