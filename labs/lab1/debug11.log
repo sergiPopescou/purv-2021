@@ -1,0 +1,110 @@
+Script started on Sri 07 Apr 2021 16:02:36
+]0;neven@neven-VirtualBox: ~[01;32mneven@neven-VirtualBox[00m:[01;34m~[00m$ cd Desktop
+]0;neven@neven-VirtualBox: ~/Desktop[01;32mneven@neven-VirtualBox[00m:[01;34m~/Desktop[00m$ cd Desktop[6Pexitclearloggin offgdb -q primjer11[21@cc -g primjer_2021_11.c -o[C[C[C[C[C[C[C[C[C[C
+]0;neven@neven-VirtualBox: ~/Desktop[01;32mneven@neven-VirtualBox[00m:[01;34m~/Desktop[00m$ gcc -g primjer_2021_11.c -o primjer11[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Ccd Desktop[K[6Pexitclearloggin offgdb -q primjer11
+Reading symbols from primjer11...done.
+(gdb) r
+Starting program: /home/neven/Desktop/primjer11 
+
+Program received signal SIGSEGV, Segmentation fault.
+0x0000000000400592 in funkcija () at primjer_2021_11.c:11
+11	        c[i] = 'a';
+(gdb) q
+A debugging session is active.
+
+	Inferior 1 [process 4267] will be killed.
+
+Quit anyway? (y or n) y
+]0;neven@neven-VirtualBox: ~/Desktop[01;32mneven@neven-VirtualBox[00m:[01;34m~/Desktop[00m$ gdb -q primjer11
+Reading symbols from primjer11...done.
+(gdb) break 11
+Breakpoint 1 at 0x400585: file primjer_2021_11.c, line 11.
+(gdb) c[Kr
+Starting program: /home/neven/Desktop/primjer11 
+
+Breakpoint 1, funkcija () at primjer_2021_11.c:11
+11	        c[i] = 'a';
+(gdb) disasp[K /s
+Dump of assembler code for function funkcija:
+primjer_2021_11.c:
+6	{
+   0x0000000000400566 <+0>:	push   %rbp
+   0x0000000000400567 <+1>:	mov    %rsp,%rbp
+   0x000000000040056a <+4>:	sub    $0x10,%rsp
+
+7	    char * c;
+8	    c = malloc(3);
+   0x000000000040056e <+8>:	mov    $0x3,%edi
+   0x0000000000400573 <+13>:	callq  0x400450 <malloc@plt>
+   0x0000000000400578 <+18>:	mov    %rax,-0x8(%rbp)
+
+9	    int i;
+10	    for(i=0; i<0xffffffff;i++)
+   0x000000000040057c <+22>:	movl   $0x0,-0xc(%rbp)
+   0x0000000000400583 <+29>:	jmp    0x400599 <funkcija+51>
+
+11	        c[i] = 'a';
+=> 0x0000000000400585 <+31>:	mov    -0xc(%rbp),%eax
+   0x0000000000400588 <+34>:	movslq %eax,%rdx
+   0x000000000040058b <+37>:	mov    -0x8(%rbp),%rax
+   0x000000000040058f <+41>:	add    %rdx,%rax
+---Type <return> to continue, or q <return> to quit---return
+   0x0000000000400592 <+44>:	movb   $0x61,(%rax)
+
+10	    for(i=0; i<0xffffffff;i++)
+   0x0000000000400595 <+47>:	addl   $0x1,-0xc(%rbp)
+   0x0000000000400599 <+51>:	cmpl   $0xffffffff,-0xc(%rbp)
+   0x000000000040059d <+55>:	jne    0x400585 <funkcija+31>
+
+12	    printf("\n %s \n", c);
+   0x000000000040059f <+57>:	mov    -0x8(%rbp),%rax
+   0x00000000004005a3 <+61>:	mov    %rax,%rsi
+   0x00000000004005a6 <+64>:	mov    $0x400664,%edi
+   0x00000000004005ab <+69>:	mov    $0x0,%eax
+   0x00000000004005b0 <+74>:	callq  0x400430 <printf@plt>
+
+13	    return;
+   0x00000000004005b5 <+79>:	nop
+
+14	}
+   0x00000000004005b6 <+80>:	leaveq 
+   0x00000000004005b7 <+81>:	retq   
+End of assembler dump.
+(gdb) display $rax
+1: $rax = 6299664
+(gdb) c
+Continuing.
+
+Breakpoint 1, funkcija () at primjer_2021_11.c:11
+11	        c[i] = 'a';
+1: $rax = 6299664
+(gdb) c
+Continuing.
+
+Breakpoint 1, funkcija () at primjer_2021_11.c:11
+11	        c[i] = 'a';
+1: $rax = 6299665
+(gdb) c
+Continuing.
+
+Breakpoint 1, funkcija () at primjer_2021_11.c:11
+11	        c[i] = 'a';
+1: $rax = 6299666
+(gdb) delete 1
+(gdb) c
+Continuing.
+
+Program received signal SIGSEGV, Segmentation fault.
+0x0000000000400592 in funkcija () at primjer_2021_11.c:11
+11	        c[i] = 'a';
+1: $rax = 6434816
+(gdb) q
+A debugging session is active.
+
+	Inferior 1 [process 4277] will be killed.
+
+Quit anyway? (y or n) y
+]0;neven@neven-VirtualBox: ~/Desktop[01;32mneven@neven-VirtualBox[00m:[01;34m~/Desktop[00m$ exit
+exit
+
+Script done on Sri 07 Apr 2021 16:04:01
