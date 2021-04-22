@@ -1,0 +1,643 @@
+#Pokretanje programa koji se debaguje 
+Starting program: /home/jovana/Desktop/PURV_lab01/primjer_07 
+
+Program received signal SIGSEGV, Segmentation fault.
+__strlen_sse2 () at ../sysdeps/x86_64/multiarch/../strlen.S:120
+120	../sysdeps/x86_64/multiarch/../strlen.S: No such file or directory.
+#Postavljenje breakpoint-a na f-ju mainBreakpoint 1 at 0x55555555513d: file primjer_2021_07.c, line 9.
+
+
+#Prikaz adresa (/a) registara rsp(stack pointer) i rbp(back pointer) pri svakom pokretanju 
+1: /a $rsp = 0x7fffffffd928
+2: /a $rbp = 0x7fffffffdea0
+#Prikaz adresa i jos nekih registara- esi,edi,eax,edx
+3: /a $esi = 0xffffffffffffde68
+4: /a $edi = 0x68
+5: /a $eax = 0x68
+6: /a $edx = 0xffffffffffffded8
+#Prikaz sadrzaja registara rsp,rbp,esi,edi,eax,edx 
+7: $rsp = (void *) 0x7fffffffd928
+8: $rbp = (void *) 0x7fffffffdea0
+9: $esi = -8600
+10: $edi = 104
+11: $eax = 104
+12: $edx = -8488
+
+
+#Pokretanje 
+Starting program: /home/jovana/Desktop/PURV_lab01/primjer_07 
+
+Breakpoint 1, main () at primjer_2021_07.c:9
+9	    printf("%s\n", array[0]);
+1: /a $rsp = 0x7fffffffdf90
+2: /a $rbp = 0x7fffffffdf90
+3: /a $esi = 0xffffffffffffe088
+4: /a $edi = 0x1
+5: /a $eax = 0x55555139
+6: /a $edx = 0xffffffffffffe098
+7: $rsp = (void *) 0x7fffffffdf90
+8: $rbp = (void *) 0x7fffffffdf90
+9: $esi = -8056
+10: $edi = 1
+11: $eax = 1431654713
+12: $edx = -8040
+
+
+#Prikaz asemblerskog koda
+Dump of assembler code for function main:
+   0x0000555555555139 <+0>:	push   %rbp
+   0x000055555555513a <+1>:	mov    %rsp,%rbp
+=> 0x000055555555513d <+4>:	movzbl 0x2ecc(%rip),%eax        # 0x555555558010 <array>
+   0x0000555555555144 <+11>:	movsbl %al,%eax
+   0x0000555555555147 <+14>:	mov    %eax,%esi
+   0x0000555555555149 <+16>:	lea    0xeb4(%rip),%rdi        # 0x555555556004
+   0x0000555555555150 <+23>:	mov    $0x0,%eax
+   0x0000555555555155 <+28>:	callq  0x555555555030 <printf@plt>
+   0x000055555555515a <+33>:	mov    $0x0,%eax
+   0x000055555555515f <+38>:	pop    %rbp
+   0x0000555555555160 <+39>:	retq   
+End of assembler dump.
+Undefined command: "echp".  Try "help".
+#Stack 
+0x7fffffffdf90:	0x00000000	0x00000000	0xf7dea0b3	0x00007fff
+0x7fffffffdfa0:	0x00000070	0x00000000	0xffffe088	0x00007fff
+0x7fffffffdfb0:	0xf7fab618	0x00000001	0x55555139	0x00005555
+0x7fffffffdfc0:	0x55555170	0x00005555	0xd7153d89	0x16fe091e
+
+
+#Prikaz adresa varijabli 
+Symbol "array" is static storage at address 0x555555558010.
+
+
+#Nastavak izvrsavanja od sljedeceg breakpoint-a 
+Continuing.
+
+Program received signal SIGSEGV, Segmentation fault.
+__strlen_sse2 () at ../sysdeps/x86_64/multiarch/../strlen.S:120
+120	../sysdeps/x86_64/multiarch/../strlen.S: No such file or directory.
+1: /a $rsp = 0x7fffffffd928
+2: /a $rbp = 0x7fffffffdea0
+3: /a $esi = 0xffffffffffffde68
+4: /a $edi = 0x68
+5: /a $eax = 0x68
+6: /a $edx = 0xffffffffffffded8
+7: $rsp = (void *) 0x7fffffffd928
+8: $rbp = (void *) 0x7fffffffdea0
+9: $esi = -8600
+10: $edi = 104
+11: $eax = 104
+12: $edx = -8488
+
+
+#Prikaz asemblerskog koda 
+Dump of assembler code for function __strlen_sse2:
+   0x00007ffff7e77d30 <+0>:	endbr64 
+   0x00007ffff7e77d34 <+4>:	pxor   %xmm0,%xmm0
+   0x00007ffff7e77d38 <+8>:	pxor   %xmm1,%xmm1
+   0x00007ffff7e77d3c <+12>:	pxor   %xmm2,%xmm2
+   0x00007ffff7e77d40 <+16>:	pxor   %xmm3,%xmm3
+   0x00007ffff7e77d44 <+20>:	mov    %rdi,%rax
+   0x00007ffff7e77d47 <+23>:	mov    %rdi,%rcx
+   0x00007ffff7e77d4a <+26>:	and    $0xfff,%rcx
+   0x00007ffff7e77d51 <+33>:	cmp    $0xfcf,%rcx
+   0x00007ffff7e77d58 <+40>:	ja     0x7ffff7e77dc0 <__strlen_sse2+144>
+=> 0x00007ffff7e77d5a <+42>:	movdqu (%rax),%xmm4
+   0x00007ffff7e77d5e <+46>:	pcmpeqb %xmm0,%xmm4
+   0x00007ffff7e77d62 <+50>:	pmovmskb %xmm4,%edx
+   0x00007ffff7e77d66 <+54>:	test   %edx,%edx
+   0x00007ffff7e77d68 <+56>:	je     0x7ffff7e77d6e <__strlen_sse2+62>
+   0x00007ffff7e77d6a <+58>:	bsf    %edx,%eax
+   0x00007ffff7e77d6d <+61>:	retq   
+   0x00007ffff7e77d6e <+62>:	and    $0xfffffffffffffff0,%rax
+   0x00007ffff7e77d72 <+66>:	pcmpeqb 0x10(%rax),%xmm1
+   0x00007ffff7e77d77 <+71>:	pcmpeqb 0x20(%rax),%xmm2
+   0x00007ffff7e77d7c <+76>:	pcmpeqb 0x30(%rax),%xmm3
+   0x00007ffff7e77d81 <+81>:	pmovmskb %xmm1,%edx
+   0x00007ffff7e77d85 <+85>:	pmovmskb %xmm2,%r8d
+   0x00007ffff7e77d8a <+90>:	pmovmskb %xmm3,%ecx
+   0x00007ffff7e77d8e <+94>:	shl    $0x10,%rdx
+   0x00007ffff7e77d92 <+98>:	shl    $0x10,%rcx
+   0x00007ffff7e77d96 <+102>:	or     %r8,%rcx
+   0x00007ffff7e77d99 <+105>:	shl    $0x20,%rcx
+   0x00007ffff7e77d9d <+109>:	or     %rcx,%rdx
+   0x00007ffff7e77da0 <+112>:	mov    %rdi,%rcx
+   0x00007ffff7e77da3 <+115>:	xor    %rax,%rcx
+   0x00007ffff7e77da6 <+118>:	and    $0xffffffffffffffc0,%rax
+   0x00007ffff7e77daa <+122>:	sar    %cl,%rdx
+   0x00007ffff7e77dad <+125>:	test   %rdx,%rdx
+   0x00007ffff7e77db0 <+128>:	je     0x7ffff7e77e30 <__strlen_sse2+256>
+   0x00007ffff7e77db2 <+130>:	bsf    %rdx,%rax
+   0x00007ffff7e77db6 <+134>:	retq   
+   0x00007ffff7e77db7 <+135>:	nopw   0x0(%rax,%rax,1)
+   0x00007ffff7e77dc0 <+144>:	and    $0xffffffffffffffc0,%rax
+   0x00007ffff7e77dc4 <+148>:	pcmpeqb (%rax),%xmm0
+   0x00007ffff7e77dc8 <+152>:	pcmpeqb 0x10(%rax),%xmm1
+   0x00007ffff7e77dcd <+157>:	pcmpeqb 0x20(%rax),%xmm2
+   0x00007ffff7e77dd2 <+162>:	pcmpeqb 0x30(%rax),%xmm3
+   0x00007ffff7e77dd7 <+167>:	pmovmskb %xmm0,%esi
+   0x00007ffff7e77ddb <+171>:	pmovmskb %xmm1,%edx
+   0x00007ffff7e77ddf <+175>:	pmovmskb %xmm2,%r8d
+   0x00007ffff7e77de4 <+180>:	pmovmskb %xmm3,%ecx
+   0x00007ffff7e77de8 <+184>:	shl    $0x10,%rdx
+   0x00007ffff7e77dec <+188>:	shl    $0x10,%rcx
+   0x00007ffff7e77df0 <+192>:	or     %rsi,%rdx
+   0x00007ffff7e77df3 <+195>:	or     %r8,%rcx
+   0x00007ffff7e77df6 <+198>:	shl    $0x20,%rcx
+   0x00007ffff7e77dfa <+202>:	or     %rcx,%rdx
+   0x00007ffff7e77dfd <+205>:	mov    %rdi,%rcx
+   0x00007ffff7e77e00 <+208>:	xor    %rax,%rcx
+   0x00007ffff7e77e03 <+211>:	and    $0xffffffffffffffc0,%rax
+   0x00007ffff7e77e07 <+215>:	sar    %cl,%rdx
+   0x00007ffff7e77e0a <+218>:	test   %rdx,%rdx
+   0x00007ffff7e77e0d <+221>:	je     0x7ffff7e77e20 <__strlen_sse2+240>
+   0x00007ffff7e77e0f <+223>:	bsf    %rdx,%rax
+   0x00007ffff7e77e13 <+227>:	retq   
+   0x00007ffff7e77e14 <+228>:	data16 nopw %cs:0x0(%rax,%rax,1)
+   0x00007ffff7e77e1f <+239>:	nop
+   0x00007ffff7e77e20 <+240>:	pxor   %xmm1,%xmm1
+   0x00007ffff7e77e24 <+244>:	pxor   %xmm2,%xmm2
+   0x00007ffff7e77e28 <+248>:	pxor   %xmm3,%xmm3
+   0x00007ffff7e77e2c <+252>:	nopl   0x0(%rax)
+   0x00007ffff7e77e30 <+256>:	movdqa 0x40(%rax),%xmm0
+   0x00007ffff7e77e35 <+261>:	pminub 0x50(%rax),%xmm0
+   0x00007ffff7e77e3a <+266>:	pminub 0x60(%rax),%xmm0
+   0x00007ffff7e77e3f <+271>:	pminub 0x70(%rax),%xmm0
+   0x00007ffff7e77e44 <+276>:	pcmpeqb %xmm3,%xmm0
+   0x00007ffff7e77e48 <+280>:	pmovmskb %xmm0,%edx
+   0x00007ffff7e77e4c <+284>:	test   %edx,%edx
+   0x00007ffff7e77e4e <+286>:	jne    0x7ffff7e77e80 <__strlen_sse2+336>
+   0x00007ffff7e77e50 <+288>:	sub    $0xffffffffffffff80,%rax
+   0x00007ffff7e77e54 <+292>:	movdqa (%rax),%xmm0
+   0x00007ffff7e77e58 <+296>:	pminub 0x10(%rax),%xmm0
+   0x00007ffff7e77e5d <+301>:	pminub 0x20(%rax),%xmm0
+   0x00007ffff7e77e62 <+306>:	pminub 0x30(%rax),%xmm0
+   0x00007ffff7e77e67 <+311>:	pcmpeqb %xmm3,%xmm0
+   0x00007ffff7e77e6b <+315>:	pmovmskb %xmm0,%edx
+   0x00007ffff7e77e6f <+319>:	test   %edx,%edx
+   0x00007ffff7e77e71 <+321>:	jne    0x7ffff7e77e84 <__strlen_sse2+340>
+   0x00007ffff7e77e73 <+323>:	jmp    0x7ffff7e77e30 <__strlen_sse2+256>
+   0x00007ffff7e77e75 <+325>:	data16 nopw %cs:0x0(%rax,%rax,1)
+   0x00007ffff7e77e80 <+336>:	add    $0x40,%rax
+   0x00007ffff7e77e84 <+340>:	pxor   %xmm0,%xmm0
+   0x00007ffff7e77e88 <+344>:	pcmpeqb (%rax),%xmm0
+   0x00007ffff7e77e8c <+348>:	pcmpeqb 0x10(%rax),%xmm1
+   0x00007ffff7e77e91 <+353>:	pcmpeqb 0x20(%rax),%xmm2
+   0x00007ffff7e77e96 <+358>:	pcmpeqb 0x30(%rax),%xmm3
+   0x00007ffff7e77e9b <+363>:	pmovmskb %xmm0,%esi
+   0x00007ffff7e77e9f <+367>:	pmovmskb %xmm1,%edx
+   0x00007ffff7e77ea3 <+371>:	pmovmskb %xmm2,%r8d
+   0x00007ffff7e77ea8 <+376>:	pmovmskb %xmm3,%ecx
+   0x00007ffff7e77eac <+380>:	shl    $0x10,%rdx
+   0x00007ffff7e77eb0 <+384>:	shl    $0x10,%rcx
+   0x00007ffff7e77eb4 <+388>:	or     %rsi,%rdx
+   0x00007ffff7e77eb7 <+391>:	or     %r8,%rcx
+   0x00007ffff7e77eba <+394>:	shl    $0x20,%rcx
+   0x00007ffff7e77ebe <+398>:	or     %rcx,%rdx
+   0x00007ffff7e77ec1 <+401>:	bsf    %rdx,%rdx
+   0x00007ffff7e77ec5 <+405>:	add    %rdx,%rax
+   0x00007ffff7e77ec8 <+408>:	sub    %rdi,%rax
+   0x00007ffff7e77ecb <+411>:	retq   
+End of assembler dump.
+#Stack 
+0x7fffffffd928:	0xf7e3ee95	0x00007fff	0x00000000	0x00000000
+0x7fffffffd938:	0x00000000	0x00000000	0x00000000	0x00000000
+0x7fffffffd948:	0x00000000	0x00000000	0x00000000	0x00000000
+0x7fffffffd958:	0x00000000	0x00000000	0x00000000	0x00000000
+
+
+#Prikaz sadrzaja registara 
+rax            0x68                104
+rbx            0x7ffff7e3cc93      140737352289427
+rcx            0x68                104
+rdx            0x7fffffffded8      140737488346840
+rsi            0x7fffffffde68      140737488346728
+rdi            0x68                104
+rbp            0x7fffffffdea0      0x7fffffffdea0
+rsp            0x7fffffffd928      0x7fffffffd928
+r8             0xffffffff          4294967295
+r9             0x0                 0
+r10            0x555555556005      93824992239621
+r11            0x68                104
+r12            0x7ffff7faf6a0      140737353807520
+r13            0x555555556004      93824992239620
+r14            0x7fffffffdeb0      140737488346800
+r15            0x73                115
+rip            0x7ffff7e77d5a      0x7ffff7e77d5a <__strlen_sse2+42>
+eflags         0x10297             [ CF PF AF SF IF RF ]
+cs             0x33                51
+ss             0x2b                43
+ds             0x0                 0
+es             0x0                 0
+fs             0x0                 0
+gs             0x0                 0
+#Prikaz asemblerskog i izvornog koda (/s)
+Dump of assembler code for function __strlen_sse2:
+../sysdeps/x86_64/multiarch/../strlen.S:
+41	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77d30 <+0>:	endbr64 
+
+42	in ../sysdeps/x86_64/multiarch/../strlen.S
+43	in ../sysdeps/x86_64/multiarch/../strlen.S
+44	in ../sysdeps/x86_64/multiarch/../strlen.S
+45	in ../sysdeps/x86_64/multiarch/../strlen.S
+46	in ../sysdeps/x86_64/multiarch/../strlen.S
+47	in ../sysdeps/x86_64/multiarch/../strlen.S
+48	in ../sysdeps/x86_64/multiarch/../strlen.S
+49	in ../sysdeps/x86_64/multiarch/../strlen.S
+50	in ../sysdeps/x86_64/multiarch/../strlen.S
+51	in ../sysdeps/x86_64/multiarch/../strlen.S
+52	in ../sysdeps/x86_64/multiarch/../strlen.S
+53	in ../sysdeps/x86_64/multiarch/../strlen.S
+54	in ../sysdeps/x86_64/multiarch/../strlen.S
+55	in ../sysdeps/x86_64/multiarch/../strlen.S
+56	in ../sysdeps/x86_64/multiarch/../strlen.S
+57	in ../sysdeps/x86_64/multiarch/../strlen.S
+58	in ../sysdeps/x86_64/multiarch/../strlen.S
+59	in ../sysdeps/x86_64/multiarch/../strlen.S
+60	in ../sysdeps/x86_64/multiarch/../strlen.S
+61	in ../sysdeps/x86_64/multiarch/../strlen.S
+62	in ../sysdeps/x86_64/multiarch/../strlen.S
+63	in ../sysdeps/x86_64/multiarch/../strlen.S
+64	in ../sysdeps/x86_64/multiarch/../strlen.S
+65	in ../sysdeps/x86_64/multiarch/../strlen.S
+66	in ../sysdeps/x86_64/multiarch/../strlen.S
+67	in ../sysdeps/x86_64/multiarch/../strlen.S
+68	in ../sysdeps/x86_64/multiarch/../strlen.S
+69	in ../sysdeps/x86_64/multiarch/../strlen.S
+70	in ../sysdeps/x86_64/multiarch/../strlen.S
+71	in ../sysdeps/x86_64/multiarch/../strlen.S
+72	in ../sysdeps/x86_64/multiarch/../strlen.S
+73	in ../sysdeps/x86_64/multiarch/../strlen.S
+74	in ../sysdeps/x86_64/multiarch/../strlen.S
+75	in ../sysdeps/x86_64/multiarch/../strlen.S
+76	in ../sysdeps/x86_64/multiarch/../strlen.S
+77	in ../sysdeps/x86_64/multiarch/../strlen.S
+78	in ../sysdeps/x86_64/multiarch/../strlen.S
+79	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77d34 <+4>:	pxor   %xmm0,%xmm0
+
+80	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77d38 <+8>:	pxor   %xmm1,%xmm1
+
+81	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77d3c <+12>:	pxor   %xmm2,%xmm2
+
+82	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77d40 <+16>:	pxor   %xmm3,%xmm3
+
+83	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77d44 <+20>:	mov    %rdi,%rax
+
+84	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77d47 <+23>:	mov    %rdi,%rcx
+
+85	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77d4a <+26>:	and    $0xfff,%rcx
+
+86	in ../sysdeps/x86_64/multiarch/../strlen.S
+87	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77d51 <+33>:	cmp    $0xfcf,%rcx
+
+88	in ../sysdeps/x86_64/multiarch/../strlen.S
+89	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77d58 <+40>:	ja     0x7ffff7e77dc0 <__strlen_sse2+144>
+
+90	in ../sysdeps/x86_64/multiarch/../strlen.S
+91	in ../sysdeps/x86_64/multiarch/../strlen.S
+92	in ../sysdeps/x86_64/multiarch/../strlen.S
+93	in ../sysdeps/x86_64/multiarch/../strlen.S
+94	in ../sysdeps/x86_64/multiarch/../strlen.S
+95	in ../sysdeps/x86_64/multiarch/../strlen.S
+96	in ../sysdeps/x86_64/multiarch/../strlen.S
+97	in ../sysdeps/x86_64/multiarch/../strlen.S
+98	in ../sysdeps/x86_64/multiarch/../strlen.S
+99	in ../sysdeps/x86_64/multiarch/../strlen.S
+100	in ../sysdeps/x86_64/multiarch/../strlen.S
+101	in ../sysdeps/x86_64/multiarch/../strlen.S
+102	in ../sysdeps/x86_64/multiarch/../strlen.S
+103	in ../sysdeps/x86_64/multiarch/../strlen.S
+104	in ../sysdeps/x86_64/multiarch/../strlen.S
+105	in ../sysdeps/x86_64/multiarch/../strlen.S
+106	in ../sysdeps/x86_64/multiarch/../strlen.S
+107	in ../sysdeps/x86_64/multiarch/../strlen.S
+108	in ../sysdeps/x86_64/multiarch/../strlen.S
+109	in ../sysdeps/x86_64/multiarch/../strlen.S
+110	in ../sysdeps/x86_64/multiarch/../strlen.S
+111	in ../sysdeps/x86_64/multiarch/../strlen.S
+112	in ../sysdeps/x86_64/multiarch/../strlen.S
+113	in ../sysdeps/x86_64/multiarch/../strlen.S
+114	in ../sysdeps/x86_64/multiarch/../strlen.S
+115	in ../sysdeps/x86_64/multiarch/../strlen.S
+116	in ../sysdeps/x86_64/multiarch/../strlen.S
+117	in ../sysdeps/x86_64/multiarch/../strlen.S
+118	in ../sysdeps/x86_64/multiarch/../strlen.S
+119	in ../sysdeps/x86_64/multiarch/../strlen.S
+120	in ../sysdeps/x86_64/multiarch/../strlen.S
+=> 0x00007ffff7e77d5a <+42>:	movdqu (%rax),%xmm4
+
+121	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77d5e <+46>:	pcmpeqb %xmm0,%xmm4
+
+122	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77d62 <+50>:	pmovmskb %xmm4,%edx
+
+123	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77d66 <+54>:	test   %edx,%edx
+
+124	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77d68 <+56>:	je     0x7ffff7e77d6e <__strlen_sse2+62>
+
+125	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77d6a <+58>:	bsf    %edx,%eax
+
+126	in ../sysdeps/x86_64/multiarch/../strlen.S
+127	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77d6d <+61>:	retq   
+
+128	in ../sysdeps/x86_64/multiarch/../strlen.S
+129	in ../sysdeps/x86_64/multiarch/../strlen.S
+130	in ../sysdeps/x86_64/multiarch/../strlen.S
+131	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77d6e <+62>:	and    $0xfffffffffffffff0,%rax
+
+132	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77d72 <+66>:	pcmpeqb 0x10(%rax),%xmm1
+
+133	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77d77 <+71>:	pcmpeqb 0x20(%rax),%xmm2
+
+134	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77d7c <+76>:	pcmpeqb 0x30(%rax),%xmm3
+
+135	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77d81 <+81>:	pmovmskb %xmm1,%edx
+
+136	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77d85 <+85>:	pmovmskb %xmm2,%r8d
+
+137	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77d8a <+90>:	pmovmskb %xmm3,%ecx
+
+138	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77d8e <+94>:	shl    $0x10,%rdx
+
+139	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77d92 <+98>:	shl    $0x10,%rcx
+
+140	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77d96 <+102>:	or     %r8,%rcx
+
+141	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77d99 <+105>:	shl    $0x20,%rcx
+
+142	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77d9d <+109>:	or     %rcx,%rdx
+
+143	in ../sysdeps/x86_64/multiarch/../strlen.S
+144	in ../sysdeps/x86_64/multiarch/../strlen.S
+145	in ../sysdeps/x86_64/multiarch/../strlen.S
+146	in ../sysdeps/x86_64/multiarch/../strlen.S
+147	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77da0 <+112>:	mov    %rdi,%rcx
+   0x00007ffff7e77da3 <+115>:	xor    %rax,%rcx
+   0x00007ffff7e77da6 <+118>:	and    $0xffffffffffffffc0,%rax
+   0x00007ffff7e77daa <+122>:	sar    %cl,%rdx
+   0x00007ffff7e77dad <+125>:	test   %rdx,%rdx
+   0x00007ffff7e77db0 <+128>:	je     0x7ffff7e77e30 <__strlen_sse2+256>
+   0x00007ffff7e77db2 <+130>:	bsf    %rdx,%rax
+   0x00007ffff7e77db6 <+134>:	retq   
+   0x00007ffff7e77db7 <+135>:	nopw   0x0(%rax,%rax,1)
+
+148	in ../sysdeps/x86_64/multiarch/../strlen.S
+149	in ../sysdeps/x86_64/multiarch/../strlen.S
+150	in ../sysdeps/x86_64/multiarch/../strlen.S
+151	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77dc0 <+144>:	and    $0xffffffffffffffc0,%rax
+
+152	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77dc4 <+148>:	pcmpeqb (%rax),%xmm0
+   0x00007ffff7e77dc8 <+152>:	pcmpeqb 0x10(%rax),%xmm1
+   0x00007ffff7e77dcd <+157>:	pcmpeqb 0x20(%rax),%xmm2
+   0x00007ffff7e77dd2 <+162>:	pcmpeqb 0x30(%rax),%xmm3
+   0x00007ffff7e77dd7 <+167>:	pmovmskb %xmm0,%esi
+   0x00007ffff7e77ddb <+171>:	pmovmskb %xmm1,%edx
+   0x00007ffff7e77ddf <+175>:	pmovmskb %xmm2,%r8d
+   0x00007ffff7e77de4 <+180>:	pmovmskb %xmm3,%ecx
+   0x00007ffff7e77de8 <+184>:	shl    $0x10,%rdx
+   0x00007ffff7e77dec <+188>:	shl    $0x10,%rcx
+   0x00007ffff7e77df0 <+192>:	or     %rsi,%rdx
+   0x00007ffff7e77df3 <+195>:	or     %r8,%rcx
+   0x00007ffff7e77df6 <+198>:	shl    $0x20,%rcx
+   0x00007ffff7e77dfa <+202>:	or     %rcx,%rdx
+
+153	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77dfd <+205>:	mov    %rdi,%rcx
+   0x00007ffff7e77e00 <+208>:	xor    %rax,%rcx
+   0x00007ffff7e77e03 <+211>:	and    $0xffffffffffffffc0,%rax
+   0x00007ffff7e77e07 <+215>:	sar    %cl,%rdx
+   0x00007ffff7e77e0a <+218>:	test   %rdx,%rdx
+   0x00007ffff7e77e0d <+221>:	je     0x7ffff7e77e20 <__strlen_sse2+240>
+   0x00007ffff7e77e0f <+223>:	bsf    %rdx,%rax
+   0x00007ffff7e77e13 <+227>:	retq   
+   0x00007ffff7e77e14 <+228>:	data16 nopw %cs:0x0(%rax,%rax,1)
+   0x00007ffff7e77e1f <+239>:	nop
+
+154	in ../sysdeps/x86_64/multiarch/../strlen.S
+155	in ../sysdeps/x86_64/multiarch/../strlen.S
+156	in ../sysdeps/x86_64/multiarch/../strlen.S
+157	in ../sysdeps/x86_64/multiarch/../strlen.S
+158	in ../sysdeps/x86_64/multiarch/../strlen.S
+159	in ../sysdeps/x86_64/multiarch/../strlen.S
+160	in ../sysdeps/x86_64/multiarch/../strlen.S
+161	in ../sysdeps/x86_64/multiarch/../strlen.S
+162	in ../sysdeps/x86_64/multiarch/../strlen.S
+163	in ../sysdeps/x86_64/multiarch/../strlen.S
+164	in ../sysdeps/x86_64/multiarch/../strlen.S
+165	in ../sysdeps/x86_64/multiarch/../strlen.S
+166	in ../sysdeps/x86_64/multiarch/../strlen.S
+167	in ../sysdeps/x86_64/multiarch/../strlen.S
+168	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77e20 <+240>:	pxor   %xmm1,%xmm1
+
+169	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77e24 <+244>:	pxor   %xmm2,%xmm2
+
+170	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77e28 <+248>:	pxor   %xmm3,%xmm3
+   0x00007ffff7e77e2c <+252>:	nopl   0x0(%rax)
+
+171	in ../sysdeps/x86_64/multiarch/../strlen.S
+172	in ../sysdeps/x86_64/multiarch/../strlen.S
+173	in ../sysdeps/x86_64/multiarch/../strlen.S
+174	in ../sysdeps/x86_64/multiarch/../strlen.S
+175	in ../sysdeps/x86_64/multiarch/../strlen.S
+176	in ../sysdeps/x86_64/multiarch/../strlen.S
+177	in ../sysdeps/x86_64/multiarch/../strlen.S
+178	in ../sysdeps/x86_64/multiarch/../strlen.S
+179	in ../sysdeps/x86_64/multiarch/../strlen.S
+180	in ../sysdeps/x86_64/multiarch/../strlen.S
+181	in ../sysdeps/x86_64/multiarch/../strlen.S
+182	in ../sysdeps/x86_64/multiarch/../strlen.S
+183	in ../sysdeps/x86_64/multiarch/../strlen.S
+184	in ../sysdeps/x86_64/multiarch/../strlen.S
+185	in ../sysdeps/x86_64/multiarch/../strlen.S
+186	in ../sysdeps/x86_64/multiarch/../strlen.S
+187	in ../sysdeps/x86_64/multiarch/../strlen.S
+188	in ../sysdeps/x86_64/multiarch/../strlen.S
+189	in ../sysdeps/x86_64/multiarch/../strlen.S
+190	in ../sysdeps/x86_64/multiarch/../strlen.S
+191	in ../sysdeps/x86_64/multiarch/../strlen.S
+192	in ../sysdeps/x86_64/multiarch/../strlen.S
+193	in ../sysdeps/x86_64/multiarch/../strlen.S
+194	in ../sysdeps/x86_64/multiarch/../strlen.S
+195	in ../sysdeps/x86_64/multiarch/../strlen.S
+196	in ../sysdeps/x86_64/multiarch/../strlen.S
+197	in ../sysdeps/x86_64/multiarch/../strlen.S
+198	in ../sysdeps/x86_64/multiarch/../strlen.S
+199	in ../sysdeps/x86_64/multiarch/../strlen.S
+200	in ../sysdeps/x86_64/multiarch/../strlen.S
+201	in ../sysdeps/x86_64/multiarch/../strlen.S
+202	in ../sysdeps/x86_64/multiarch/../strlen.S
+203	in ../sysdeps/x86_64/multiarch/../strlen.S
+204	in ../sysdeps/x86_64/multiarch/../strlen.S
+205	in ../sysdeps/x86_64/multiarch/../strlen.S
+206	in ../sysdeps/x86_64/multiarch/../strlen.S
+207	in ../sysdeps/x86_64/multiarch/../strlen.S
+208	in ../sysdeps/x86_64/multiarch/../strlen.S
+209	in ../sysdeps/x86_64/multiarch/../strlen.S
+210	in ../sysdeps/x86_64/multiarch/../strlen.S
+211	in ../sysdeps/x86_64/multiarch/../strlen.S
+212	in ../sysdeps/x86_64/multiarch/../strlen.S
+213	in ../sysdeps/x86_64/multiarch/../strlen.S
+214	in ../sysdeps/x86_64/multiarch/../strlen.S
+215	in ../sysdeps/x86_64/multiarch/../strlen.S
+216	in ../sysdeps/x86_64/multiarch/../strlen.S
+217	in ../sysdeps/x86_64/multiarch/../strlen.S
+218	in ../sysdeps/x86_64/multiarch/../strlen.S
+219	in ../sysdeps/x86_64/multiarch/../strlen.S
+220	in ../sysdeps/x86_64/multiarch/../strlen.S
+221	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77e30 <+256>:	movdqa 0x40(%rax),%xmm0
+
+222	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77e35 <+261>:	pminub 0x50(%rax),%xmm0
+
+223	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77e3a <+266>:	pminub 0x60(%rax),%xmm0
+
+224	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77e3f <+271>:	pminub 0x70(%rax),%xmm0
+
+225	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77e44 <+276>:	pcmpeqb %xmm3,%xmm0
+
+226	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77e48 <+280>:	pmovmskb %xmm0,%edx
+
+227	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77e4c <+284>:	test   %edx,%edx
+
+228	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77e4e <+286>:	jne    0x7ffff7e77e80 <__strlen_sse2+336>
+
+229	in ../sysdeps/x86_64/multiarch/../strlen.S
+230	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77e50 <+288>:	sub    $0xffffffffffffff80,%rax
+
+231	in ../sysdeps/x86_64/multiarch/../strlen.S
+232	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77e54 <+292>:	movdqa (%rax),%xmm0
+
+233	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77e58 <+296>:	pminub 0x10(%rax),%xmm0
+
+234	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77e5d <+301>:	pminub 0x20(%rax),%xmm0
+
+235	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77e62 <+306>:	pminub 0x30(%rax),%xmm0
+
+236	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77e67 <+311>:	pcmpeqb %xmm3,%xmm0
+
+237	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77e6b <+315>:	pmovmskb %xmm0,%edx
+
+238	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77e6f <+319>:	test   %edx,%edx
+
+239	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77e71 <+321>:	jne    0x7ffff7e77e84 <__strlen_sse2+340>
+
+240	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77e73 <+323>:	jmp    0x7ffff7e77e30 <__strlen_sse2+256>
+   0x00007ffff7e77e75 <+325>:	data16 nopw %cs:0x0(%rax,%rax,1)
+
+241	in ../sysdeps/x86_64/multiarch/../strlen.S
+242	in ../sysdeps/x86_64/multiarch/../strlen.S
+243	in ../sysdeps/x86_64/multiarch/../strlen.S
+244	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77e80 <+336>:	add    $0x40,%rax
+
+245	in ../sysdeps/x86_64/multiarch/../strlen.S
+246	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77e84 <+340>:	pxor   %xmm0,%xmm0
+
+247	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77e88 <+344>:	pcmpeqb (%rax),%xmm0
+   0x00007ffff7e77e8c <+348>:	pcmpeqb 0x10(%rax),%xmm1
+   0x00007ffff7e77e91 <+353>:	pcmpeqb 0x20(%rax),%xmm2
+   0x00007ffff7e77e96 <+358>:	pcmpeqb 0x30(%rax),%xmm3
+   0x00007ffff7e77e9b <+363>:	pmovmskb %xmm0,%esi
+   0x00007ffff7e77e9f <+367>:	pmovmskb %xmm1,%edx
+   0x00007ffff7e77ea3 <+371>:	pmovmskb %xmm2,%r8d
+   0x00007ffff7e77ea8 <+376>:	pmovmskb %xmm3,%ecx
+   0x00007ffff7e77eac <+380>:	shl    $0x10,%rdx
+   0x00007ffff7e77eb0 <+384>:	shl    $0x10,%rcx
+   0x00007ffff7e77eb4 <+388>:	or     %rsi,%rdx
+   0x00007ffff7e77eb7 <+391>:	or     %r8,%rcx
+   0x00007ffff7e77eba <+394>:	shl    $0x20,%rcx
+   0x00007ffff7e77ebe <+398>:	or     %rcx,%rdx
+
+248	in ../sysdeps/x86_64/multiarch/../strlen.S
+249	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77ec1 <+401>:	bsf    %rdx,%rdx
+
+250	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77ec5 <+405>:	add    %rdx,%rax
+
+251	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77ec8 <+408>:	sub    %rdi,%rax
+
+252	in ../sysdeps/x86_64/multiarch/../strlen.S
+253	in ../sysdeps/x86_64/multiarch/../strlen.S
+   0x00007ffff7e77ecb <+411>:	retq   
+End of assembler dump.
+#Prikaz vrijednosti varijabli 
+$1 = "hello"
+$2 = 104 'h'
+$3 = 104 'h'
+$4 = 104
+#Prikaz vrijednosti varijable kad god se promijeni 
+Hardware watchpoint 2: array
+#Prikaz izvornog koda 
+253	in ../sysdeps/x86_64/multiarch/../strlen.S
+#Prikaz gdje smo 
+#0  __strlen_sse2 () at ../sysdeps/x86_64/multiarch/../strlen.S:120
+#1  0x00007ffff7e3ee95 in __vfprintf_internal (
+    s=0x7ffff7faf6a0 <_IO_2_1_stdout_>, format=0x555555556004 "%s\n", 
+    ap=ap@entry=0x7fffffffdeb0, mode_flags=mode_flags@entry=0)
+    at vfprintf-internal.c:1688
+#2  0x00007ffff7e27ebf in __printf (format=<optimized out>) at printf.c:33
+#3  0x000055555555515a in main () at primjer_2021_07.c:9
+#Pomijeranje (za jednu liniju) i izvrsavanje linije izvornog koda 
+
+Program terminated with signal SIGSEGV, Segmentation fault.
+The program no longer exists.
+The program is not being run.
+#Program je terminiran 
+No stack.
+#Prikaz traga steka kad se program ubije 
+
+No stack.
+quit
