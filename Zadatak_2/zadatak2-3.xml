@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<times>
+    <system>
+        <name>zadatak2-3</name>
+        <declarations/>
+        <process>
+            <portcontainer>
+                <nailcontainer>
+                    <labelcontainer>
+                        <object>
+                            <metrics h="40" w="100" x="290" y="90"/>
+                            <misc color="b6d2c2" id="0"/>
+                        </object>
+                        <label text="Process_A" x="291" y="100"/>
+                        <font name="SansSerif"/>
+                    </labelcontainer>
+                </nailcontainer>
+            </portcontainer>
+            <misc parameters="6,14" template="Automaton"/>
+        </process>
+        <comment>
+            <portcontainer>
+                <nailcontainer>
+                    <labelcontainer>
+                        <object>
+                            <metrics h="50" w="100" x="290" y="180"/>
+                            <misc color="feffcc" id="1"/>
+                        </object>
+                        <label text="T1" x="329" y="198"/>
+                        <font name="SansSerif" size="14" style="2"/>
+                    </labelcontainer>
+                </nailcontainer>
+            </portcontainer>
+        </comment>
+        <comment>
+            <portcontainer>
+                <nailcontainer>
+                    <labelcontainer>
+                        <object>
+                            <metrics h="50" w="100" x="290" y="270"/>
+                            <misc color="feffcc" id="2"/>
+                        </object>
+                        <label text="T2" x="329" y="288"/>
+                        <font name="SansSerif" size="14" style="2"/>
+                    </labelcontainer>
+                </nailcontainer>
+            </portcontainer>
+        </comment>
+        <comment>
+            <portcontainer>
+                <nailcontainer>
+                    <labelcontainer>
+                        <object>
+                            <metrics h="50" w="100" x="290" y="370"/>
+                            <misc color="feffcc" id="3"/>
+                        </object>
+                        <label text="T3" x="329" y="388"/>
+                        <font name="SansSerif" size="14" style="2"/>
+                    </labelcontainer>
+                </nailcontainer>
+            </portcontainer>
+        </comment>
+        <comment>
+            <portcontainer>
+                <nailcontainer>
+                    <labelcontainer>
+                        <object>
+                            <metrics h="52" w="100" x="290" y="468"/>
+                            <misc color="feffcc" id="4"/>
+                        </object>
+                        <label text="T4" x="329" y="487"/>
+                        <font name="SansSerif" size="14" style="2"/>
+                    </labelcontainer>
+                </nailcontainer>
+            </portcontainer>
+        </comment>
+    </system>
+    <tasktable schedulingpolicy="RM">
+        <task C="1" D="10" P="6" T="10" name="A1"/>
+        <task C="3" D="12" P="5" T="12" name="A2"/>
+        <task C="15" D="60" P="1" T="60" behaviour="P" name="T1"/>
+        <task C="6" D="48" P="2" T="48" behaviour="P" name="T2"/>
+        <task C="4" D="25" P="3" T="25" behaviour="P" name="T3"/>
+        <task C="3" D="15" P="4" T="15" behaviour="P" name="T4"/>
+    </tasktable>
+    <template>
+        <name>Automaton</name>
+        <parameter>const N1, const N2</parameter>
+        <declarations>
+            <declaration name="x" type="clock" value="0"/>
+        </declarations>
+        <location>
+            <portcontainer>
+                <nailcontainer>
+                    <labelcontainer>
+                        <object>
+                            <metrics h="40" w="100" x="230" y="90"/>
+                            <misc id="0"/>
+                        </object>
+                        <label text="Location_1" x="246" y="100"/>
+                        <font name="SansSerif"/>
+                    </labelcontainer>
+                </nailcontainer>
+            </portcontainer>
+            <misc initial="true"/>
+        </location>
+        <location>
+            <portcontainer>
+                <nailcontainer>
+                    <labelcontainer>
+                        <object>
+                            <metrics h="40" w="100" x="230" y="200"/>
+                            <misc id="1"/>
+                        </object>
+                        <label text="Location_2" x="246" y="210"/>
+                        <font name="SansSerif"/>
+                    </labelcontainer>
+                </nailcontainer>
+            </portcontainer>
+            <misc tasktype="A1"/>
+        </location>
+        <location>
+            <portcontainer>
+                <nailcontainer>
+                    <labelcontainer>
+                        <object>
+                            <metrics h="40" w="100" x="230" y="310"/>
+                            <misc id="2"/>
+                        </object>
+                        <label text="Location_3" x="246" y="320"/>
+                        <font name="SansSerif"/>
+                    </labelcontainer>
+                </nailcontainer>
+            </portcontainer>
+            <misc tasktype="A2"/>
+        </location>
+        <transition>
+            <edge fromport="3" fromvertex="0" toport="0" tovertex="1">
+                <nailcontainer>
+                    <labelcontainer>
+                        <object>
+                            <metrics h="70" x="280" y="130"/>
+                            <misc id="3"/>
+                        </object>
+                        <label align="left" x="213" y="154"/>
+                        <font name="SansSerif"/>
+                    </labelcontainer>
+                    <nail cursor="12" id="0" x="277" y="127"/>
+                    <nail cursor="12" id="1" x="277" y="197"/>
+                </nailcontainer>
+            </edge>
+            <metrics lx="213" ly="154" sx="213" sy="154"/>
+            <misc guard="x &gt;= N1" showdetails="true"/>
+        </transition>
+        <transition>
+            <edge fromport="3" fromvertex="1" toport="0" tovertex="2">
+                <nailcontainer>
+                    <labelcontainer>
+                        <object>
+                            <metrics h="70" x="280" y="240"/>
+                            <misc id="4"/>
+                        </object>
+                        <label align="left" x="211" y="265"/>
+                        <font name="SansSerif"/>
+                    </labelcontainer>
+                    <nail cursor="12" id="0" x="277" y="237"/>
+                    <nail cursor="12" id="1" x="277" y="307"/>
+                </nailcontainer>
+            </edge>
+            <metrics lx="211" ly="265" sx="211" sy="265"/>
+            <misc guard="x &gt;= N2" showdetails="true"/>
+        </transition>
+        <transition>
+            <edge fromport="3" fromvertex="2" toport="2" tovertex="0">
+                <nailcontainer>
+                    <labelcontainer>
+                        <object>
+                            <metrics h="300" w="180" x="280" y="110"/>
+                            <misc id="6"/>
+                        </object>
+                        <label align="left" x="418" y="239"/>
+                        <font name="SansSerif"/>
+                    </labelcontainer>
+                    <nail cursor="12" id="0" x="277" y="347"/>
+                    <nail cursor="12" id="1" x="277" y="387"/>
+                    <nail cursor="12" id="2" x="297" y="407"/>
+                    <nail cursor="12" id="3" x="427" y="407"/>
+                    <nail cursor="12" id="4" x="457" y="387"/>
+                    <nail cursor="12" id="5" x="457" y="147"/>
+                    <nail cursor="12" id="6" x="437" y="117"/>
+                    <nail cursor="12" id="7" x="417" y="107"/>
+                    <nail cursor="12" id="8" x="327" y="107"/>
+                </nailcontainer>
+            </edge>
+            <metrics lx="418" ly="239" sx="418" sy="239"/>
+            <misc assign="x := 0" showdetails="true"/>
+        </transition>
+    </template>
+    <precgraph>
+        <precnode>
+            <portcontainer>
+                <nailcontainer>
+                    <labelcontainer>
+                        <object>
+                            <metrics h="40" w="100" x="280" y="90"/>
+                            <misc color="d8cdff" id="0"/>
+                        </object>
+                        <label text="T2" x="322" y="100"/>
+                        <font name="SansSerif"/>
+                    </labelcontainer>
+                </nailcontainer>
+            </portcontainer>
+        </precnode>
+        <precnode>
+            <portcontainer>
+                <nailcontainer>
+                    <labelcontainer>
+                        <object>
+                            <metrics h="40" w="100" x="520" y="90"/>
+                            <misc color="d8cdff" id="1"/>
+                        </object>
+                        <label text="T1" x="562" y="100"/>
+                        <font name="SansSerif"/>
+                    </labelcontainer>
+                </nailcontainer>
+            </portcontainer>
+        </precnode>
+        <precedence>
+            <edge fromport="2" fromvertex="0" toport="1" tovertex="1">
+                <nailcontainer>
+                    <labelcontainer>
+                        <object>
+                            <metrics w="140" x="380" y="110"/>
+                            <misc id="2"/>
+                        </object>
+                        <label align="left" editable="false" visible="false"/>
+                        <font name="SansSerif"/>
+                    </labelcontainer>
+                    <nail cursor="12" id="0" x="377" y="107"/>
+                    <nail cursor="12" id="1" x="517" y="107"/>
+                </nailcontainer>
+            </edge>
+        </precedence>
+    </precgraph>
+</times>
