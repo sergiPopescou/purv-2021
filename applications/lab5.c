@@ -13,7 +13,7 @@
 #include <time.h>
 #include <string.h>
 
-#define THREAD_PRIORITY         25
+#define THREAD_PRIORITY         10
 #define THREAD_STACK_SIZE       512
 #define THREAD_TIMESLICE        5
 #define MAX_BUFFER_SIZE         256
@@ -23,7 +23,7 @@
 #define ACCL "ACCL:"
 #define GYRO "GYRO:"
 #define TEMP "TEMP:"
-#define RISC "RISC:"
+#define RISK "RISK:"
 #define OK ":OK"
 #define NOK ":NOK"
 
@@ -53,9 +53,11 @@ typedef struct string_buffer {
 
 void addToBuffer(Buffer*, rt_uint8_t num); // add new number to buffer
 rt_uint8_t getFromBuffer(Buffer*); // get number from buffer
+rt_uint8_t isEmpty(Buffer*); // check if buffer is empty
 void addStringToBuffer(StringBuffer*, char* str); // add string to string buffer
 void getStringFromBuffer(StringBuffer*, char** dest); // get string from string buffer
-void watchdogCheck(rt_uint8_t data, rt_uint8_t str_size, const char* type, const char* ok_nok); // watch-dog check data
+rt_uint8_t isStringBufferEmpty(StringBuffer*); // check if string buffer is empty
+void watchdogCheck(rt_uint16_t data, rt_uint8_t str_size, const char* type, const char* ok_nok); // watch-dog check data
 
 // sensor's buffers
 static Buffer accl_buff;
@@ -64,6 +66,9 @@ static Buffer temp_buff;
 
 // output buffer
 static StringBuffer output_buff;
+
+// thread finish indicator
+static rt_uint8_t finish_ind[3] = {0, 0, 0};
 
 // buffer access mutex
 static rt_mutex_t accl_buff_access = RT_NULL;
@@ -76,6 +81,7 @@ struct rt_semaphore accl_sem_empty, accl_sem_full;
 struct rt_semaphore gyro_sem_empty, gyro_sem_full;
 struct rt_semaphore temp_sem_empty, temp_sem_full;
 struct rt_semaphore out_sem_empty, out_sem_full;
+struct rt_semaphore finished_sem, watchdog_finished_sem;
 
 // accelerometer thread
 void accelerometer(void* pParam) {
@@ -98,6 +104,10 @@ void accelerometer(void* pParam) {
         rt_thread_mdelay(params->sleep);
     }
 
+    // indicate that this thread has finished job
+    rt_sem_take(&finished_sem, RT_WAITING_FOREVER);
+    finish_ind[0] = 1;
+    rt_sem_release(&finished_sem);
 }
 
 // gyroscope thread
@@ -120,6 +130,11 @@ void gyroscope(void* pParam) {
 
         rt_thread_mdelay(params->sleep);
     }
+
+    // indicate that this thread has finished job
+    rt_sem_take(&finished_sem, RT_WAITING_FOREVER);
+    finish_ind[1] = 1;
+    rt_sem_release(&finished_sem);
 }
 
 // thermometer thread
@@ -143,6 +158,11 @@ void thermometer(void* pParam) {
 
         temp += rand() % 5 - 2;
     }
+
+    // indicate that this thread has finished job
+    rt_sem_take(&finished_sem, RT_WAITING_FOREVER);
+    finish_ind[2] = 1;
+    rt_sem_release(&finished_sem);
 }
 
 void watchdog(void* pParam) {
@@ -150,7 +170,26 @@ void watchdog(void* pParam) {
     rt_uint16_t rand_start = *((rt_uint16_t*) pParam);
     srand(time(RT_NULL) + rand_start);
 
+    // initial values
+    rt_uint8_t accl_new = 0, accl_last = 0;
+    rt_uint8_t gyro_new = 0, gyro_last = 0;
+
     while (1) {
+
+        if (rt_sem_take(&finished_sem, RT_WAITING_NO) == RT_EOK) {
+
+            if (finish_ind[0] == 1 && finish_ind[1] == 1 && finish_ind[2] == 1) {
+                // all threads are finished
+                // safe access to buffer
+                if (isEmpty(&accl_buff) && isEmpty(&gyro_buff) && isEmpty(&temp_buff)) {
+                    rt_sem_release(&finished_sem);
+                    rt_sem_release(&watchdog_finished_sem);
+                    break;
+                }
+            }
+
+            rt_sem_release(&finished_sem);
+        }
 
         // check accelerator data
         if (rt_sem_take(&accl_sem_full, RT_WAITING_NO) == RT_EOK) {
@@ -161,20 +200,24 @@ void watchdog(void* pParam) {
 
             rt_sem_release(&accl_sem_empty); // signal semaphore
 
+            // ok_nok string
+            // here is stored OK or NOK text
             char* ok_nok = (char*) calloc(strlen(NOK), sizeof(char));
             rt_uint8_t str_size = 1;
             if (read_accl < 200) {
                 // valid
                 str_size += strlen(OK);
-                strcat(ok_nok, OK);
+                strcat(ok_nok, OK); // add OK to string
             } else {
                 // invalid
                 str_size += strlen(NOK);
-                strcat(ok_nok, NOK);
+                strcat(ok_nok, NOK); // add NOK to string
             }
 
             watchdogCheck(read_accl, str_size, ACCL, ok_nok);
             free(ok_nok); // free memory
+
+            accl_new = read_accl; // save last value
         }
 
         // check gyroscope data
@@ -186,20 +229,24 @@ void watchdog(void* pParam) {
 
             rt_sem_release(&gyro_sem_empty); // signal semaphore
 
+            // ok_nok string
+            // here is stored OK or NOK text
             char* ok_nok = (char*) calloc(strlen(NOK), sizeof(char));
             rt_uint8_t str_size = 1; // size
             if (read_gyro < 190) {
                 // valid
                 str_size += strlen(OK);
-                strcat(ok_nok, OK);
+                strcat(ok_nok, OK); // add OK to string
             } else {
                 // invalid
                 str_size += strlen(NOK);
-                strcat(ok_nok, NOK);
+                strcat(ok_nok, NOK); // add NOK to string
             }
 
             watchdogCheck(read_gyro, str_size, GYRO, ok_nok);
             free(ok_nok); // free memory
+
+            gyro_new = read_gyro; // save last value
         }
 
         // check thermometer data
@@ -211,9 +258,31 @@ void watchdog(void* pParam) {
 
             rt_sem_release(&temp_sem_empty); // signal semaphore
 
+            // ok_nok string
+            // here is stored OK or NOK text
             char* ok_nok = (char*) calloc(strlen(NOK), sizeof(char));
             rt_uint8_t str_size = 1; // size
             if (read_temp >= 15 && read_temp <= 25) {
+                // valid
+                str_size += strlen(OK);
+                strcat(ok_nok, OK); // add OK to string
+            } else {
+                // invalid
+                str_size += strlen(NOK);
+                strcat(ok_nok, NOK); // add NOK to string
+            }
+
+            watchdogCheck(read_temp, str_size, TEMP, ok_nok);
+            free(ok_nok); // free memory
+        }
+
+        if (gyro_last != gyro_new || accl_last != accl_new) {
+            // there are new values
+            rt_uint16_t risk = accl_new * gyro_new;
+
+            char* ok_nok = (char*) calloc(strlen(NOK), sizeof(char));
+            rt_uint8_t str_size = 1;
+            if (risk < 16000) {
                 // valid
                 str_size += strlen(OK);
                 strcat(ok_nok, OK);
@@ -223,14 +292,17 @@ void watchdog(void* pParam) {
                 strcat(ok_nok, NOK);
             }
 
-            watchdogCheck(read_temp, str_size, TEMP, ok_nok);
-            free(ok_nok); // free memory
+            watchdogCheck(risk, str_size, RISK, ok_nok);
+            free(ok_nok);
+
+            // this variables are used for preventing multiple calculation for same values
+            accl_last = accl_new;
+            gyro_last = gyro_new;
         }
 
         rt_uint8_t sleep = rand() % 5 + 1;
         rt_thread_mdelay(sleep);
     }
-
 }
 
 void output(void* pParam) {
@@ -238,6 +310,13 @@ void output(void* pParam) {
     rt_uint16_t sleep = *((rt_uint16_t*) pParam);
 
     while (1) {
+
+        if (rt_sem_take(&watchdog_finished_sem, RT_WAITING_NO) == RT_EOK) {
+            // access to StringBuffer is safe, because watchdog (producer) theread is finished
+            if (isStringBufferEmpty(&output_buff))
+                break;
+            rt_sem_release(&watchdog_finished_sem);
+        }
 
         rt_sem_take(&out_sem_full, RT_WAITING_FOREVER); // wait for a semaphore
         rt_mutex_take(out_buff_access, RT_WAITING_FOREVER); // lock mutex
@@ -253,9 +332,9 @@ void output(void* pParam) {
 
         rt_thread_mdelay(sleep);
     }
-
 }
 
+// main function
 int main_function(void) {
 
     // initialize mutexe's
@@ -296,23 +375,25 @@ int main_function(void) {
     rt_sem_init(&temp_sem_full, "Thermometer Full Semaphore", 0, RT_IPC_FLAG_FIFO);
     rt_sem_init(&out_sem_empty, "Output Empty Semaphore", MAX_BUFFER_SIZE, RT_IPC_FLAG_FIFO);
     rt_sem_init(&out_sem_full, "Output Full Semaphore", 0, RT_IPC_FLAG_FIFO);
+    rt_sem_init(&finished_sem, "Finish Indicator Semaphore", 1, RT_IPC_FLAG_FIFO);
+    rt_sem_init(&watchdog_finished_sem, "Watchdog Finished Semaphore", 0, RT_IPC_FLAG_FIFO);
 
     // define parameters for each thread
     // accelerator parameters
     Param* accl_params = (Param*) malloc(sizeof(Param));
-    accl_params->num_of_iterations = (rt_uint16_t) 3;
+    accl_params->num_of_iterations = (rt_uint16_t) 100;
     accl_params->sleep = (rt_uint16_t) 20;
     accl_params->rand_start = (rt_uint16_t) 0;
 
     // gyroscope parameters
     Param* gyro_params = (Param*) malloc(sizeof(Param));
-    gyro_params->num_of_iterations = (rt_uint16_t) 3;
+    gyro_params->num_of_iterations = (rt_uint16_t) 100;
     gyro_params->sleep = (rt_uint16_t) 20;
     gyro_params->rand_start = (rt_uint16_t) 1000;
 
     // thermometer parameters
     Param* temp_params = (Param*) malloc(sizeof(Param));
-    temp_params->num_of_iterations = (rt_uint16_t) 3;
+    temp_params->num_of_iterations = (rt_uint16_t) 100;
     temp_params->sleep = (rt_uint16_t) 20;
     temp_params->rand_start = (rt_uint16_t) 2000;
 
@@ -390,6 +471,12 @@ rt_uint8_t getFromBuffer(Buffer* buffer) {
     return d;
 }
 
+rt_uint8_t isEmpty(Buffer* buffer) {
+    if (buffer->head == buffer->tail)
+        return 1;
+    return 0;
+}
+
 // add string to string buffer
 void addStringToBuffer(StringBuffer* buffer, char* s) {
     buffer->data[buffer->head] = (char*) calloc(strlen(s) + 1, sizeof(char));
@@ -405,7 +492,13 @@ void getStringFromBuffer(StringBuffer* buffer, char** s) {
     buffer->tail = (buffer->tail + 1) % MAX_BUFFER_SIZE; // incerement tail
 }
 
-void watchdogCheck(rt_uint8_t data, rt_uint8_t str_size, const char* type, const char* ok_nok) {
+rt_uint8_t isStringBufferEmpty(StringBuffer* buffer) {
+    if (buffer->head == buffer->tail)
+        return 1;
+    return 0;
+}
+
+void watchdogCheck(rt_uint16_t data, rt_uint8_t str_size, const char* type, const char* ok_nok) {
     // helper string's
     char* int_str = (char*) calloc(MAX_NUMBER_LENGHT, sizeof(char));
 
