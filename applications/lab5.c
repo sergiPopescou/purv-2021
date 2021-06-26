@@ -57,7 +57,7 @@ rt_uint8_t isEmpty(Buffer*); // check if buffer is empty
 void addStringToBuffer(StringBuffer*, char* str); // add string to string buffer
 void getStringFromBuffer(StringBuffer*, char** dest); // get string from string buffer
 rt_uint8_t isStringBufferEmpty(StringBuffer*); // check if string buffer is empty
-void watchdogCheck(rt_uint16_t data, rt_uint8_t str_size, const char* type, const char* ok_nok); // watch-dog check data
+void watchdogCheck(rt_uint16_t data, rt_uint8_t str_size, const char* type, const char* ok_nok); // watchdog check data
 
 // sensor's buffers
 static Buffer accl_buff;
@@ -452,6 +452,7 @@ int main_function(void) {
     if (wcdg_thread != RT_NULL)
         rt_thread_startup(wcdg_thread);
 
+    // start output thread
     if (outp_thread != RT_NULL)
         rt_thread_startup(outp_thread);
 
@@ -459,6 +460,7 @@ int main_function(void) {
 }
 
 // implementation
+//
 void addToBuffer(Buffer* buffer, rt_uint8_t d) {
     buffer->data[buffer->head] = d;
     buffer->head = (buffer->head + 1) % MAX_BUFFER_SIZE;
